@@ -29,8 +29,7 @@
         "24": "ext-icon.png",
         "32": "ext-icon.png"
       },
-      "default_title": "Service-now Auto Assigner",
-      "default_popup": "index.html"
+      "default_title": "Service-now Auto Assigner"
     },
     "externally_connectable": {
       "ids": ["alfmonmccdmkhlenponilhikbhmpcncp"],

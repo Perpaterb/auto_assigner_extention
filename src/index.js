@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Popup from './popup'
+import OnPage from './onPage'
 
 ReactDOM.render(
   <React.StrictMode>
-    <Popup />
+    <OnPage />
   </React.StrictMode>,
   document.getElementById('root')
 );
