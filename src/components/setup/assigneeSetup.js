@@ -5,7 +5,7 @@ import AssigneeListItem from './assigneeListItem'
 
 export default function Assignees() {
 
-    if (localStorage.getItem("assignees") === null) {
+    if (localStorage.getItem("assignees") === null || localStorage.getItem("assignees") === 'null') {
         console.log("Assignees Var has been set to default")
         localStorage.setItem("assignees", JSON.stringify([]))
     }

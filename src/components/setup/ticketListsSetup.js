@@ -5,7 +5,7 @@ import TicketListsItem from './ticketListsItem'
 
 export default function TicketLists() {
 
-  if (localStorage.getItem("ticketLists") === null) {
+  if (localStorage.getItem("ticketLists") === null || localStorage.getItem("ticketLists") === 'null') {
         console.log("ticketLists Var has been set to default")
         localStorage.setItem("ticketLists", JSON.stringify([]))
     }

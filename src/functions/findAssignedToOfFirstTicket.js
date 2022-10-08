@@ -1,8 +1,7 @@
 
-export default function findAssignedToOfFirstTicket(doc) {
+export default function FindAssignedToOfFirstTicket(doc) {
     let iframe = doc.getElementById("gsft_main").contentWindow.document
     let cellHeaders = iframe.getElementById("hdr_task")
-
     let assigneeIsInColunm = 0
 
     for (const child of cellHeaders.children) {
@@ -15,6 +14,9 @@ export default function findAssignedToOfFirstTicket(doc) {
 
     let ticketRowInList = iframe.getElementsByClassName("list_row")
 
-    
-    return ticketRowInList[0].children[assigneeIsInColunm]
+    if (ticketRowInList[0] === undefined){
+        return undefined
+    }else{
+        return ticketRowInList[0].children[assigneeIsInColunm]
+    }    
 }
