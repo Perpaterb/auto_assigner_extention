@@ -3,12 +3,7 @@ import Button from '@mui/material/Button';
 import AssigneeListItem from './assigneeListItem'
 
 
-export default function Assignees() {
-
-    if (localStorage.getItem("assignees") === null || localStorage.getItem("assignees") === 'null') {
-        console.log("Assignees Var has been set to default")
-        localStorage.setItem("assignees", JSON.stringify([]))
-    }
+export default function Assignees(props) {
 
     const [assArray, setAssArray] = useState(JSON.parse(localStorage.getItem("assignees")))
 
@@ -18,7 +13,7 @@ export default function Assignees() {
     }, [assArray])   
 
     const handleAddAssignee = () => {
-        setAssArray(assArray => [...assArray, {id: Math.random().toString().slice(2,11) ,name: "", status: "Working", startTime: "09:00", endTime: "17:00", breaks: []}])
+        setAssArray(assArray => [...assArray, {id: Math.random().toString().slice(2,11) ,name: "", serviceNowId: "", status: "Working", startTime: "09:00", endTime: "17:00", breaks: []}])
     };
 
     const handleDelete = async (assigneeID) => {
@@ -48,7 +43,6 @@ export default function Assignees() {
     }
     
     const updateBreakStartTime = async (assigneeID, breakID, data) => {
-        //let newData = timeMaker(data)  
         let temp = JSON.parse(JSON.stringify(assArray))
         for (let i = 0; i < temp.length; i++){
             if (temp[i].id === assigneeID) {
@@ -63,7 +57,6 @@ export default function Assignees() {
     }
     
     const updateBreakLength = async (assigneeID, breakID, data) => {   
-        //let newData = numberCleaner(data)  
         let temp = JSON.parse(JSON.stringify(assArray))
         for (let i = 0; i < temp.length; i++){
             if (temp[i].id === assigneeID) {
@@ -77,6 +70,16 @@ export default function Assignees() {
         }
     }
 
+    const overrideBreakValue = async (breaks, assigneeID) => {   
+        let temp = JSON.parse(JSON.stringify(assArray))
+        for (let i = 0; i < temp.length; i++){
+            if (temp[i].id === assigneeID) {
+                temp[i].breaks = breaks
+                setAssArray(temp) 
+            }
+        }
+    }
+
     const passBackInfo = (assignee , assigneeID) => {
         let temp = JSON.parse(JSON.stringify(assArray))
         for (let i = 0; i < temp.length; i++){
@@ -86,6 +89,7 @@ export default function Assignees() {
                 temp[i].breaks = assignee.breaks
                 temp[i].startTime = assignee.startTime
                 temp[i].endTime = assignee.endTime
+                temp[i].serviceNowId = assignee.serviceNowId
                 setAssArray(temp)
             }
         }
@@ -101,6 +105,7 @@ export default function Assignees() {
             handleDeleteBreak={handleDeleteBreak}
             updateBreakStartTime={updateBreakStartTime}
             updateBreakLength={updateBreakLength}
+            overrideBreakValue={overrideBreakValue}
             key={assignee.id}
         />    
         ))
@@ -108,7 +113,7 @@ export default function Assignees() {
     return (
         <div>
             {listComps}
-            <Button style={{minWidth: '140px', fontSize: '11px', marginTop: '5px'}} onClick={handleAddAssignee} variant="contained">Add Assignee</Button>
+            <Button style={{minWidth: '140px', fontSize: '14px', marginTop: '5px'}} onClick={handleAddAssignee} variant="contained">Add Assignee</Button>
         </div>
     );
 }

@@ -5,16 +5,11 @@ import TicketListsItem from './ticketListsItem'
 
 export default function TicketLists() {
 
-  if (localStorage.getItem("ticketLists") === null || localStorage.getItem("ticketLists") === 'null') {
-        console.log("ticketLists Var has been set to default")
-        localStorage.setItem("ticketLists", JSON.stringify([]))
-    }
-
     const [ticketLists, setTicketLists] = useState(JSON.parse(localStorage.getItem("ticketLists")))
 
     useEffect(() => {
         localStorage.setItem("ticketLists", JSON.stringify(ticketLists))
-        console.log("ticketLists Have been Updated", ticketLists)
+        //console.log("ticketLists Have been Updated", ticketLists)
     }, [ticketLists])   
 
     const handleAddList = () => {

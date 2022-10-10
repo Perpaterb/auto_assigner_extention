@@ -7,9 +7,9 @@ import Box from '@mui/material/Box';
 
 import Assignees from './assigneeSetup'
 import TicketLists from './ticketListsSetup'
+import ShiftPresets from './shiftPresetsSetup'
 import Options from './optionsSetup'
 import { Scrollbars } from 'react-custom-scrollbars';
-
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -65,7 +65,8 @@ export default function Setup() {
                 <Tabs value={value} onChange={handleChange}>
                 <Tab label="Assignees" {...a11yProps(0)} />
                 <Tab label="Ticket Lists" {...a11yProps(1)} />
-                <Tab label="Options" {...a11yProps(2)} />
+                <Tab label="Shift Presets" {...a11yProps(2)} />
+                <Tab label="Options" {...a11yProps(3)} />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
@@ -75,6 +76,9 @@ export default function Setup() {
                 <TicketLists/>
             </TabPanel>
             <TabPanel value={value} index={2}>
+                <ShiftPresets/>
+            </TabPanel>
+            <TabPanel value={value} index={3}>
                 <Options/>
             </TabPanel>
             </Box>
