@@ -5,7 +5,7 @@ export default function MakeAvalibleAssigneeList() {
     let assignees = JSON.parse(localStorage.getItem("assignees"))
     let options = JSON.parse(localStorage.getItem("options"))
     let today = new Date();
-    let systemTime = parseInt(today.toLocaleTimeString().replace(":", "").slice(0, -1))
+    let systemTime = parseInt(today.toLocaleTimeString('en-US', {hour12: false,}).replace(":", "").slice(0, -1))
     
     //for each assignee are they working
     for(let ass = 0; ass < assignees.length; ass++){
@@ -28,7 +28,7 @@ export default function MakeAvalibleAssigneeList() {
                     let breakHr = (breakEndTime-breakMin)/60;
                     breakEndTime = parseInt(((breakHr < 10 ? "0" : "") + breakHr.toString() + ":" + (breakMin < 10 ? "0" : "") + breakMin.toString()).replace(":", ""));
 
-                    if(systemTime > parseInt(assigneesBreaks[bre].startTime.replace(":", "")) && systemTime + 1 < breakEndTime){
+                    if(systemTime > parseInt(assigneesBreaks[bre].startTime.replace(":", "")) && systemTime < breakEndTime){
                         onbreak = 1
                         break
                     }

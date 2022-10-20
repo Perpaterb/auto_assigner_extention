@@ -12,7 +12,7 @@ import { createRoot } from 'react-dom/client';
 const serviceNowNavPage = document.getElementsByClassName("navpage-layout")[0]; 
 
 if (serviceNowNavPage !== undefined) {
-  console.log("content script running on service connect page")
+  //console.log("content script running on service connect page")
   serviceNowNavPage.style.zIndex = "-1"
 
   const body = document.querySelector('body')

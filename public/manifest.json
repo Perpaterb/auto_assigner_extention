@@ -2,15 +2,7 @@
     "name": "Service-now Auto Assigner",
     "version": "1.0",
     "description": "Assigning jobs in service-now",
-    "permissions": [
-      "storage",
-      "tabs",
-      "scripting"
-    ],
     "host_permissions": ["https://*.service-now.com/*"],
-    "background": {
-      "service_worker": "background.js"
-    },
     "content_scripts": [
       {
         "matches": ["https://*.service-now.com/*"],
@@ -30,6 +22,11 @@
         "32": "ext-icon.png"
       },
       "default_title": "Service-now Auto Assigner"
+    },
+    "icons": { 
+      "16": "ext-icon.png",
+      "48": "ext-icon.png",
+      "128": "ext-icon.png" 
     },
     "externally_connectable": {
       "ids": ["alfmonmccdmkhlenponilhikbhmpcncp"],

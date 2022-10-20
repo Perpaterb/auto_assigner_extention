@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { useWakeLock } from 'react-screen-wake-lock';
 import Status from './components/status';
 import Setup from './components/setup/setup';
 import findAssignedToOfFirstTicket from './functions/findAssignedToOfFirstTicket';
@@ -38,7 +37,7 @@ export default function Popup() {
   
   if (localStorage.getItem("options") === null || localStorage.getItem("options") === 'null' || localStorage.getItem("options") === "[]") {
     console.log("options Var has been set to default")
-    localStorage.setItem("options", JSON.stringify({loopTimer: 6, stopBeforeShiftEnd: 10, unassigeTicketsFromOnLeaveAssignees: false}))
+    localStorage.setItem("options", JSON.stringify({loopTimer: 8, stopBeforeShiftEnd: 10, unassigeTicketsFromOnLeaveAssignees: false}))
   }
   
 
@@ -76,7 +75,6 @@ export default function Popup() {
       setStartStopText("Start")
       setStatusText("Stopped")
       setStatusTextColor("white")
-      wakeLock.release();
     }
   };
 
@@ -89,7 +87,6 @@ export default function Popup() {
       keepAwake();
     }else{
       setSetupText("Open Setup")
-      wakeLock.release();
     }
   };
 
@@ -119,12 +116,14 @@ export default function Popup() {
     bubbles: true, cancelable: true, keyCode: 40
   });
   
-  async function testIfCanBeAssigned(assignee) {
+  async function testIfCanBeAssigned(assignee, assigneeList) {
     await sleep(searchInterval/4);
     let isThereATicketInList = findAssignedToOfFirstTicket(document)
-    if (isThereATicketInList != undefined) {
+    if (isThereATicketInList !== undefined) {
       inserAssigneeInToTicket(assignee)
-    } 
+      console.log("All avalible assignees : ", assigneeList)
+      console.log("And the winner is : ", assignee)
+     }
   }
 
   async function inserAssigneeInToTicket(assignee) {
@@ -170,10 +169,11 @@ export default function Popup() {
 
     let UnassignTickets = JSON.parse(localStorage.getItem("options")).unassigeTicketsFromOnLeaveAssignees
     let today = new Date();
-    let systemTime = parseInt(today.toLocaleTimeString().replace(":", "").slice(0, -1))
+    let systemTime = parseInt(today.toLocaleTimeString('en-US', {hour12: false,}).replace(":", "").slice(0, -1))
+    console.log("the system time is: ", systemTime)
     let assigneesOnLeaveSNowIDList = MakeAssigneesOnLeaveSNowIDList()
     // stop at midnight
-    if(systemTime >= 23355 ){
+    if(systemTime >= 2355 ){
       if (startStopText === "Stop"){
         setStartStopText("Start")
         setStatusText("Stopped for the night")
@@ -189,6 +189,7 @@ export default function Popup() {
           //if there are avalible assignees
           let avalibleAssigneeList = MakeAvalibleAssigneeList()
           if (avalibleAssigneeList.length > 0) {
+
             //it there are activated lists
             let ticketList = MakeAvalibleListsList()
 
@@ -197,14 +198,15 @@ export default function Popup() {
               let listIframURL = GetiframUrlFromUserInputUrl(ticketList[runURLNumber])
               document.getElementById("gsft_main").src = listIframURL;
               //test is loaded after 1 sec
-              
-              testIfCanBeAssigned(avalibleAssigneeList[assigneeAssignedToNumber])
 
-              if (avalibleAssigneeList.length - 1 === assigneeAssignedToNumber){
+              //if the ticker in > the number of people avalible then user the 0th person. 
+              if (assigneeAssignedToNumber > (avalibleAssigneeList.length - 1)){
                 assigneeAssignedToNumber = 0
-              } else {
-                assigneeAssignedToNumber += 1
               }
+              testIfCanBeAssigned(avalibleAssigneeList[assigneeAssignedToNumber], avalibleAssigneeList )
+
+              // add one to the ticker
+              assigneeAssignedToNumber += 1
 
               //move to next list
               if (ticketList.length - 1 === runURLNumber){

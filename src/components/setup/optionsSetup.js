@@ -85,7 +85,7 @@ export default function Options() {
             <TextField type="number" size="small" style={{minWidth: '400px'}} id="loopTimer" label="Loops timmer in seconds" variant="outlined" value={loopTimer}  onChange={handleUpdateLoopTimer} />
         </Grid>
         <Grid xs={11} style={{ paddingTop: 20 }}>
-            <TextField type="number" size="small" style={{minWidth: '400px'}} id="stopBeforeShiftEnd" label="Stop assining before end of shift in min" variant="outlined" value={stopBeforeShiftEnd}  onChange={handleUpdateStopBeforeShiftEnd} />
+            <TextField type="number" size="small" style={{minWidth: '400px'}} id="stopBeforeShiftEnd" label="Stop assigning before end of shift in min" variant="outlined" value={stopBeforeShiftEnd}  onChange={handleUpdateStopBeforeShiftEnd} />
         </Grid>
         <Grid xs={10} style={{ paddingTop: 20 }}>
           <FormControl>
