@@ -2,12 +2,20 @@ import OnPage from  '../onPage';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
+(function () {
+  addScript('script.js', true);
 
-// chrome.runtime.onMessage.addListener(function (message) {
-//   console.log("content", message)
+})();
 
-// });
-
+function addScript(filePath, processSettings) {
+  var s = document.createElement('script');
+  //s.setAttribute("id", "emblaexpress");
+  //s.textContent = chrome.runtime.id;
+  //s.src = chrome.runtime.getURL(filePath);
+  //(document.head || document.documentElement).appendChild(s);
+  s.innerHTML = filePath;
+  (document.head || document.documentElement).prepend(s);
+}
 
 const serviceNowNavPage = document.getElementsByClassName("navpage-layout")[0]; 
 
@@ -32,3 +40,4 @@ if (serviceNowNavPage !== undefined) {
   root.render(<OnPage/>)
 
 }
+

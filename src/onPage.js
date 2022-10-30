@@ -13,6 +13,8 @@ import MakeAvalibleAssigneeList from './functions/makeAvalibleAssigneeList';
 import FindAssignedToPopUp from './functions/findAssignedToPopUp';
 import MakeAvalibleListsList from './functions/makeAvalibleListsList';
 import MakeAssigneesOnLeaveSNowIDList from './functions/makeAssigneesOnLeaveSNowIDList';
+import injectionScript from './components/script'
+import axios from 'axios';
 
 const sleep = ms => new Promise(
   resolve => setTimeout(resolve, ms)
@@ -45,6 +47,7 @@ export default function Popup() {
   const [setupText, setSetupText] = React.useState("Open Setup");
   const [statusText, setStatusText] = React.useState("Stopped");
   const [statusTextColor, setStatusTextColor] = React.useState("white");
+  const [iframeURL, setIframeURL] = React.useState("");
   
   // loop timer
   let searchInterval = JSON.parse(localStorage.getItem("options")).loopTimer * 1000
@@ -66,7 +69,19 @@ export default function Popup() {
 
   const handleStartStop = () => {
     if (startStopText === "Start"){
-      setStartStopText("Stop")
+
+
+      chrome.runtime.sendMessage({method:"runFunction"}, function(response) {
+        console.log("getting Back!!! ",response);
+      });
+
+      var evt = new CustomEvent("MyEventType", {detail: "Any Object Here"});
+      window.dispatchEvent(evt);
+
+      
+
+
+        setStartStopText("Stop")
       setSetupText("Open Setup")
       setStatusText("Running")
       setStatusTextColor("#7FFFD4")
@@ -126,22 +141,74 @@ export default function Popup() {
      }
   }
 
+  async function getTodos(href) {
+    // Simple one
+     let todos = await axios.get(href);
+    console.log("axios!!!!!!",todos.data.g_builddate);
+  }
+
   async function inserAssigneeInToTicket(assignee) {
-    let iframe = document.getElementById("gsft_main").contentWindow.document
-    let ticket = iframe.getElementsByClassName('breadcrumb_container')
-    ticket[1].dispatchEvent(singleClickEvent)
-    await sleep(searchInterval/16);
-    ticket[1].dispatchEvent(singleClickEvent)
-    let isThereATicketInList = findAssignedToOfFirstTicket(document)
-    isThereATicketInList.dispatchEvent(doubleClickEvent)
-    await sleep(searchInterval/16);
-    let assignedToPopUp = FindAssignedToPopUp(document)
-    assignedToPopUp.value = assignee//.slice(0, -1)
+    //let iframe = document.getElementById("gsft_main").contentWindow.document
+
+    await sleep(searchInterval/8);
+
+    let iframe = document.getElementById("gsft_main").contentWindow.document;
+
+    console.log("iframe", iframe)
+    console.log("linked formlink", iframe.getElementsByClassName("linked formlink"))
+
+
+    setIframeURL(iframe.getElementsByClassName("linked formlink")[0].href)   
+    document.getElementById("gsft_main").src = iframe.getElementsByClassName("linked formlink")[0].href;
+    
+    //document.getElementById("miniIframe").src = iframe.getElementsByClassName("linked formlink")[0].href;
+    await sleep(searchInterval/4);
+
+
+    getTodos(iframe.getElementsByClassName("linked formlink")[0].href)
+    
+
+    // iframe = document.getElementById("gsft_main").contentWindow.document;
+    // console.log("click!!!!!!!", iframe.getElementsByClassName("container-fluid")[0])
+    // iframe.getElementsByClassName("container-fluid")[0].click()
+
+
+    // await sleep(searchInterval/8);
+
+    // let currentTabId = ""
+    // chrome.runtime.sendMessage({ text: "what is my tab_id?" }, tabId => {
+    //   console.log('My tabId is', tabId);
+    //   currentTabId = tabId
+    // });
+
+
+    // console.log("currentTabId".currentTabId)
+
+    // console.log("g_form!!!!!!!", document.getElementById('gsft_main').contentWindow.g_form)
+    //document.getElementById('gsft_main').contentWindow.g_form.setValue('assigned_to', 'a182e1ed6fc67100089be4021c3ee434');
+    // await sleep(searchInterval/4);
+    // document.getElementById('gsft_main').contentWindow.g_form.save()
+
+
+    //iframe.contentDocument.querySelector('.breadcrumb_container').click()
+    // let ticket = iframe.getElementsByClassName('breadcrumb_container')
+    // ticket[1].dispatchEvent(singleClickEvent)
+    // await sleep(searchInterval/16);
+    // ticket[1].dispatchEvent(singleClickEvent)
+
+    // let isThereATicketInList = findAssignedToOfFirstTicket(document)
+    // isThereATicketInList.dispatchEvent(doubleClickEvent)
+    // await sleep(searchInterval/16);
+    // let assignedToPopUp = FindAssignedToPopUp(document)
+    // assignedToPopUp.value = assignee//.slice(0, -1)
+
     // assignedToPopUp.dispatchEvent(focus)
     // await sleep(searchInterval/16);
     // assignedToPopUp.dispatchEvent(downArrowKeyEvent)
-    await sleep(searchInterval/2);
-    assignedToPopUp.dispatchEvent(enterKeyEvent)
+    // await sleep(searchInterval/2);
+    // assignedToPopUp.dispatchEvent(enterKeyEvent)
+    // iframe.contentDocument.querySelector('#cell_edit_ok').click()
+    //assignedToPopUp.dispatchEvent(enterKeyEvent)
 
   }
 
@@ -158,7 +225,8 @@ export default function Popup() {
     let assignedToPopUp = FindAssignedToPopUp(document)
     assignedToPopUp.value = ''
     await sleep(searchInterval/16);
-    assignedToPopUp.dispatchEvent(enterKeyEvent)
+    iframe.contentDocument.querySelector('#cell_edit_ok').click()
+    //assignedToPopUp.dispatchEvent(enterKeyEvent)
 
   }
 
@@ -170,10 +238,10 @@ export default function Popup() {
     let UnassignTickets = JSON.parse(localStorage.getItem("options")).unassigeTicketsFromOnLeaveAssignees
     let today = new Date();
     let systemTime = parseInt(today.toLocaleTimeString('en-US', {hour12: false,}).replace(":", "").slice(0, -1))
-    console.log("the system time is: ", systemTime)
+    //console.log("the system time is: ", systemTime)
     let assigneesOnLeaveSNowIDList = MakeAssigneesOnLeaveSNowIDList()
     // stop at midnight
-    if(systemTime >= 2355 ){
+    if(systemTime >= 3333 ){
       if (startStopText === "Stop"){
         setStartStopText("Start")
         setStatusText("Stopped for the night")
@@ -203,6 +271,7 @@ export default function Popup() {
               if (assigneeAssignedToNumber > (avalibleAssigneeList.length - 1)){
                 assigneeAssignedToNumber = 0
               }
+
               testIfCanBeAssigned(avalibleAssigneeList[assigneeAssignedToNumber], avalibleAssigneeList )
 
               // add one to the ticker
@@ -239,6 +308,9 @@ export default function Popup() {
 
   }, [startStopText])
 
+
+// <iframe id='miniIframe' src={iframeURL} style={{marginRight: '-400px', Height: '400px',width: '800px',border: '1px solid', boxShadow: '2px 2px 10px'}} />
+
   return (
     <Box sx={{ flexGrow: 1}} style={{marginRight: '-400px', width: '800px', border: '1px solid', boxShadow: '2px 2px 10px'}}>
       <AppBar position="static">
@@ -258,6 +330,5 @@ export default function Popup() {
         }      
       })()}
     </Box>
-  );
+);
 }
-
